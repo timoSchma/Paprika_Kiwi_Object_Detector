@@ -208,7 +208,7 @@ The JSON utils contains *reading* the annotations of the images, which were expo
 there were several JSON files containing the annotations, so additionally there is a method for *merging* several JSON files.  
 
 The preprocessing methods that we apply for our model can be found in the `Image Preprocessing.ipynb` in the `notebooks` folder. 
-First, we read and merge the JSON annotations with the described utils. Then, we downscale every image to 416x416, which 
+First, we read and merge the JSON annotations with the described utils. Then, we downscale every image to 416\*416, which 
 is the required input format for the YOLO net and adapt the bounding box coordinates accordingly.  
 There are some grayscaling options available in this notebook, which we implemented in the beginning of our project 
 but ultimately don't use. We decided to work with colored images, because we applied transfer learning and the transferred weights
@@ -239,7 +239,7 @@ rotate the image, the bounding box coordinates also have to be adapted according
 preprocessing.py provides two functions, one for rotating the image and one for rotating points. The later is invoked for 
 every corner point of the bounding box. Using OpenCV, these rotation functions can be implemented quite easily.
 `Image Rotation.ipynb` in the `notebooks` folder allows trying out the rotation implementation. Although it's possible to
-rotate by an arbitrary angle, we decided to only use angles of $`90°`$, $`180°`$ and $`270°`$ for training, otherwise the recalculated 
+rotate by an arbitrary angle, we decided to only use angles of 90°, 180° and 270° for training, otherwise the recalculated 
 bounding box would no longer fit as close as possible to the region of interest and become excessively large.
 
 <div align="center">
@@ -277,7 +277,7 @@ Last but not least, we implemented random 'distortions' of images. The idea is t
 bell peppers. This works the following way: First, we create two random numbers; one scaling factor and one representing 
 a new aspect ratio. Depending on the new aspect ratio (smaller or greater than 1), either the image width or height is scaled 
 with the randomly generated factor. Then, the other length is adjusted such that the image has the randomly generated aspect 
-ratio. Lastly, the image is resized to the required $`416\times 416`$ format. Also, the bounding box coordinates are adjusted accordingly
+ratio. Lastly, the image is resized to the required 416 * 416 format. Also, the bounding box coordinates are adjusted accordingly
 such that they fit the slightly distorted image. This is realized with the available resizing methods in the `preprocessing.py`. 
 You can try this out with the `Jittering-Notebook.ipynb` in the `notebooks` folder.  
 
@@ -307,7 +307,7 @@ to avoid misunderstandings and unnecessary effort in preprocessing. Because when
 very clear that we all would have done the labelling slightly different (e.g. different names for object attributes, checkboxes 
 instead of dropdown). We also labelled on a small subset first to compare the labelling approach in the team for consistency. 
 - When acquiring the images, we didn't consider taking only quadratic pictures. This led to the problem of having distortions in the images 
-after preprocessing because we resized them to $`416\times416`$. We could solve this issue by adjusting the resizing function to include padding of the image
+after preprocessing because we resized them to 416\*416. We could solve this issue by adjusting the resizing function to include padding of the image
 such that keeping the original aspect ratio was made possible (this feature can easily be set by a boolean token). To check this out, go to the 
 'Image Preprocessing' notebook in the `notebooks` folder and set the following boolean.
 
@@ -344,13 +344,13 @@ Inference itself will be described in the next chapter together with the Jetson 
 
 ##### Network Architecture of Tiny-YOLOv3
 
-Tiny-YOLOv3 is a smaller version of YOLOv3, the third revision of the YOLO object detection network by Joseph Redmon et al. [[4]](#4)).
+Tiny-YOLOv3 is a smaller version of YOLOv3, the third revision of the YOLO object detection network by Joseph Redmon et al.
 Essentially, YOLO is a one-stage algorithm for object detection. In contrast to two-stage approaches, object classes and bounding boxes are predicted 
 in a single step. This generally makes them faster than two-stage approaches like (Fast(er)-)R-CNN as the entire detection pipeline is done end-to-end in a
 single network. The SSD architecture shown in the benchmarks above also is a one-stage algorithm but with a slightly different approach than YOLO.
 
 The basic intuition behind YOLO is as follows: To detect objects, the image is divided into grid cells and each cell is used to predict an object and 
-multiple bounding boxes. The following picture shows the division of an image into $`7\times7`$ grid-cells [[2]](#2). 
+multiple bounding boxes. The following picture shows the division of an image into 7\*7 grid-cells. 
 In this case, the yellow cell represents the prediction of the class "cat" and a set of bounding boxes (e.g. 20). 
 
 <div align="center">
@@ -359,7 +359,7 @@ In this case, the yellow cell represents the prediction of the class "cat" and a
 
 Our intuition when selecting the network was to choose a rather small network as there are only few computing resources available at deployment on the Nano.
 Therefore, the "tiny" version of YOLO become our model of choice. It contains considerably fewer layers than YOLOv3 and therefore achieves a better real-time performance.
-The corresponding network architecture of Tiny-YOLOv3 can be seen in the following figure. [[1]](#1) 
+The corresponding network architecture of Tiny-YOLOv3 can be seen in the following figure.
 The network mainly consists of alternating convolution and max-pool layers. As activation function, leaky ReLU is used, which can provide more stable learning (e.g. avoiding gradient saturation). 
 Furthermore, batch normalization is used, which also contributes to a more stable training, as scale changes of the weights in low layers of deep networks often result in many more weight adjustments. 
 
@@ -372,14 +372,14 @@ We will now explain the functionality of the different layers.
 ##### Convolutional and Max-Pool Layer
 
 During the forward pass, the input image passes through the 23 layers that were previously displayed.
-The convolution layer is the classic 2D convolution with stride 1, where the kernel is either $`3\times3`$ or $`1\times1`$. Padding is applied to keep the spatial dimensions 
-from reducing. The reduction of the spatial dimensions is implemented here using the max-pool layer with stride 2 and a $`2\times2`$ kernel.
+The convolution layer is the classic 2D convolution with stride 1, where the kernel is either 3\*3 or 1\*1. Padding is applied to keep the spatial dimensions 
+from reducing. The reduction of the spatial dimensions is implemented here using the max-pool layer with stride 2 and a 2\*2 kernel.
 
 ##### Up-Sampling Layer
 
 Generally, up-sampling is used to increase the spatial dimensions of a feature map. 
-Tiny-YOLOv3 has exactly two output layers representing the grid-cells at two different scales (layer 1: $`13\times13`$ grid and layer 2: $`26\times26`$ grid). The regular version of YOLOv3
-uses three output layers at different scales. To increase the spatial dimensions from $`13\times13`$ to $`26\times26`$ this up-sampling layer is used.
+Tiny-YOLOv3 has exactly two output layers representing the grid-cells at two different scales (layer 1: 13\*13 grid and layer 2: 26\*26 grid). The regular version of YOLOv3
+uses three output layers at different scales. To increase the spatial dimensions from 13\*13 to 26\*26 this up-sampling layer is used.
 
 ##### Route Layer
 
@@ -394,7 +394,7 @@ It is important to use the correct anchor boxes as each output-layer is at a dif
 ##### Interpreting the Network Output:
 
 An image of the shape (width = 416, height = 416, colour channels = 3) as input for Tiny-YOLOv3 produces two outputs.
-These outputs have the form $`(1, 13, 13, 3\*(5+C))`$ and $`(1, 26, 26, 3\*(5+C))`$, whereby an explanation of the dimensions is given by the following picture.
+These outputs have the form (1, 13, 13, 3\*(5+C)) and (1, 26, 26, 3\*(5+C)), whereby an explanation of the dimensions is given by the following picture.
 
 <div align="center">
 <img src="docs/yolo-output.PNG" width="650" align="center" title="TinyYoloV3 Structure">
@@ -403,7 +403,7 @@ These outputs have the form $`(1, 13, 13, 3\*(5+C))`$ and $`(1, 26, 26, 3\*(5+C)
 In the context of bounding boxes, YOLOv3 predicts the offsets to given anchor boxes. This is more stable than predicting width and height.
 For each cell in the grid, three bounding boxes are predicted each characterized by 5 parameters. 
 The number three results from the number of anchor boxes.
-Depending on the scale, there are either $`13\times13`$ or $`26\times26`$ cells in the grid.
+Depending on the scale, there are either 13\*13 or 26\*26 cells in the grid.
 The classes are predicted using one-hot encoding. For each box, there are thus an additional C outputs encoding the C-conditional classes probabilities.
 Since the class confidences (C) are probabilities, the sigmoid function is used. To convert this prediction to the coordinates of the actual bounding boxes, 
 the prediction must be transformed using the following formulas.
@@ -412,8 +412,8 @@ the prediction must be transformed using the following formulas.
 <img src="docs/box_coordinates.PNG" width="300" align="center" title="TinyYoloV3 Structure">
 </div>
 
-The x and y coordinates should be considered relative to the upper left corner of the grid cell (c). Assuming there is a prediction $`p = (0.27, 0.9)`$ for the grid cell (4, 4), 
-this corresponds to the coordinates $`b = (sigmoid(0.27) + 4, sigmoid(0.9) + 4) = (4.57, 4.71)`$.
+The x and y coordinates should be considered relative to the upper left corner of the grid cell (c). Assuming there is a prediction p = (0.27, 0.9) for the grid cell (4, 4), 
+this corresponds to the coordinates b = (sigmoid(0.27) + 4, sigmoid(0.9) + 4) = (4.57, 4.71).
 The sigmoid function ensures that the range of values is between 0 and 1 so that the result does not lie outside of the grid cell.
 The width and height of the bounding box is calculated by a log-space transformation and a multiplication with the anchors (a).
 
@@ -423,7 +423,7 @@ The objectness score (s) indicates the probability for an object to be in the bo
 
 To reduce the number of boxes from the network output to the final boxes the following steps are applied.
 
-First, the boxes with a too low objectness score (e.g. $`s<0.5`$) are discarded. 
+First, the boxes with a too low objectness score (e.g. s<0.5) are discarded. 
 Afterwards, the boxes detecting the same object are reduced to a single box using Non-Max-Suppression (NMS). 
 The best boxes can be obtained in three simplified steps. 
 1. Selection of the box with the highest objectness score.
@@ -437,7 +437,7 @@ A large number of overlapping boxes is reduced to one box per object by removing
 <img src="docs/NonMaxSupression.PNG" width="650" align="center" title="TinyYoloV3 Structure">
 </div>
 
-For a better understanding of these calculations, the pseudo codes for intersection over union (IoU) and Non-Max-Suppression (NMS) are given below (adapted from [[3]](#3)). 
+For a better understanding of these calculations, the pseudo codes for intersection over union (IoU) and Non-Max-Suppression (NMS) are given below. 
 In principle, IoU is based on the area and intersection calculation of rectangles. NMS iteratively uses the calculated IoU to remove overlapping boxes.
 
 <div align="center">
@@ -448,10 +448,10 @@ In principle, IoU is based on the area and intersection calculation of rectangle
 
 In this example, we demonstrate the processing steps described above on a single image.
 1. Input image containing three bell peppers.
-2. Image divided into $`13\times13`$ grid cells.
+2. Image divided into 13\*13 grid cells.
 3. Three anchor boxes for one grid cell. As we can see, the anchor boxes cover different object shapes. This allows them to specialize more in order to detect a larger variety of objects.
 4. Initial bounding boxes predicted by the network. Only a section is shown here and the box coordinates have already been converted. 
-5. Boxes with a too low objectness score (e.g. $`objectness<0.5`$) are removed before the NMS is applied.
+5. Boxes with a too low objectness score (e.g. objectness<0.5) are removed before the NMS is applied.
 6. Final bounding boxes are determined by applying NMS and IoU. For each bell pepper, only a single bounding box remains.
 
 <div align="center">
@@ -475,7 +475,7 @@ Objectness measures how likely it is for the box to contain any object and is pr
 This score is class-agnostic, meaning the class of the considered object is not relevant for this step.
 
 To compute the confidence loss, we apply binary cross-entropy using the object mask as target.
-The object mask assigns each object in the ground truth to the anchor box (or bounding box prior as they are called in the YOLOv3 paper [[4]](#4))) with maximum IoU.
+The object mask assigns each object in the ground truth to the anchor box (or bounding box prior as they are called in the YOLOv3 paper) with maximum IoU.
 Each object is assigned to exactly one anchor box. The object mask is 1 for anchor boxes with an assigned object and 0 for all others.
 
 Anchor boxes without an assigned ground truth object contribute only to the confidence loss.
@@ -484,7 +484,7 @@ They are ignored for both the localization and classification loss.
 ##### Localization Loss
 
 The localization loss looks at the exact size and position of the predicted bounding box. 
-As described [above](#interpreting-the-network-output), they are define by four coordinates $`p_x`$, $`p_y`$, $`p_w`$, and $`p_h`$ defining the transformation from the assigned anchor box.
+As described [above](#interpreting-the-network-output), they are define by four coordinates p_x, p_y, p_w, and p_h defining the transformation from the assigned anchor box.
 The loss is computed using the sum of squared errors on the difference between the ground truth and the predicted coordinates.
 To compute this loss, the ground truth box is also converted to the output format.
 
@@ -525,7 +525,7 @@ Since the features are precomputed, we cannot easily apply random augmentations 
 
 ### Implementation and Usage
 
-We inspired our implementation using the GitHub repository from Y. Dong [[5]](#5).
+We inspired our implementation using the GitHub repository from Y. Dong.
 Our model is implemented in `model.py` using the function in `model_utils.py` to transform the output and compute the loss.
 The data generator in `generator.py` is used to feed the input data to the model for training and evaluation.
 The bottleneck features are implemented in `bottleneck_features.py`, including a custom data generator.
@@ -590,11 +590,11 @@ history_bottleneck = TinyYoloV3.train_model_wrapper(last_layer_model, (train_gen
 We have performed training with early stopping an patience 20. Thereby we used 10% of the images as test images, the remaining images were split into 20% validation 
 and 80% training data. Summing up, we were able to achieve the following performance results.
 
-- mAP: $`0.6578`$ with AP of $`0.6794`$ for bell peppers and $`0.6364`$ for kiwis
-- confidence threshold was set $`0.2`$
-- correctly classified objects: $`206/256`$
-- precision: $`73.05\%`$
-- recall: $`80.47\%`$
+- mAP: 0.6578 with AP of 0.6794 for bell peppers and 0.6364 for kiwis
+- confidence threshold was set 0.2
+- correctly classified objects: 206/256
+- precision: 73.05\%
+- recall: 80.47\%
 
 <div align="center">
 <img src="docs/Training_Error.png" width="650" align="center" title="System Architecture">
@@ -614,7 +614,7 @@ As a result, we selected the following final parameters:
 - learning-rate: 1e-2 for freezing and 1e-6 for fine-tuning
 - maximum 200 epochs for freezing and fine-tuning (with early-stopping)
 - jittering parameters:
-    - rotation probability: rotate by $`90°`$, $`180°`$ and $`270°`$ with probability from uniform distribution
+    - rotation probability: rotate by 90°, 180° and 270° with probability from uniform distribution
     - jittering probability: compare values in the `Paprika-Training.ipynb` notebook
 
 ### Inference
