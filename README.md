@@ -1,3 +1,5 @@
+![](https://img.shields.io/badge/PROJECT-Completed-<COLOR>.svg) ![](https://img.shields.io/badge/Made%20with-Python-1f425f.svg) ![](https://img.shields.io/badge/Ask%20me-anything-1abc9c.svg)
+
 ![title image](docs/Screenshot_2020-08-02_at_13.05.32.png)
 
 # Detection of Bell Peppers and Kiwis in Video Data Using TinyYoloV3
