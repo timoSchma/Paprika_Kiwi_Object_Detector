@@ -945,3 +945,14 @@ Summing up, we have shown the proof of concept of a CNN-based detection of bell 
 entire process flow starting from data gathering and labelling, transitioning to modelling and concluding with deployment. Our solution could be rolled out to a scenario with an increased number of items and products which will finally serve as an automated inventory tracking and restocking system 
 in supermarkets. Limitations are given by the one-object-per-grid-rule of YOLO that is on the one hand supporting spatial diversity but on the other hand complicates
 the detection of objects that are very close to each other (such as in a supermarket shelf).
+
+# References
+[1] He & Huang, Chang-Wei & Wei, Liqing & Li, Lingling & Anfu, Guo. (2019). TF-YOLO: An Improved Incremental Network for Real-Time Object Detection. Applied Sciences. 9. 3225. 10.3390/app9163225. 
+
+[2] Dr.-Ing. Björn Schmitz (2020). Service Analytics A: 07 – CNN Architectures for Object Detection, Lecture at Karlsruhe Institute of Technology.
+
+[3] Python Lessons (2019). YOLOv3 theory explained. Accessed on 07.08.19 <https://medium.com/analytics-vidhya/yolo-v3-theory-explained-33100f6d193#:~:text=In%20YOLO%20v3%2C%20the%20way,fixed%20number%20of%20bounding%20boxes.&text=To%20do%20that%2C%20we%20divide,of%20the%20network%20is%2032.>
+
+[4] Redmon, J., & Farhadi, A. (2018). YOLOv3: An incremental improvement. arXiv preprint arXiv:1804.02767.
+
+[5] Y. Dong (2019). Easy Keras Yolo V3. Accessed on 27.06.2020 <https://github.com/yunlongdong/EasyKerasYoloV3>
